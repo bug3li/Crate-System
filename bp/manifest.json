@@ -1,0 +1,38 @@
+{
+    "format_version": 2,
+    "header": {
+        "name": "CrateSystem",
+        "description": "...",
+        "uuid": "352065ee-a052-489c-be79-e46ce0784dfc",
+        "version": "1.3.0",
+        "min_engine_version": [1, 21, 30]
+    },
+    "modules": [
+        {
+            "type": "data",
+            "uuid": "cf2c74c5-ef45-40b8-9d19-914156e35c4f",
+            "version": "1.3.0"
+        },
+        {
+            "uuid": "26976c4a-8a9e-4a85-963a-816083a31138",
+            "version": "1.0.0",
+            "type": "script",
+            "language": "javascript",
+            "entry": "scripts/main.js"
+        }
+    ],
+    "dependencies": [
+        {
+            "module_name": "@minecraft/server",
+            "version": "2.8.0-beta"
+        },
+        {
+            "module_name": "@minecraft/server-ui",
+            "version": "2.0.0"
+        },
+        {
+            "uuid": "6b4b7be3-9a97-4fc0-85bb-54becd8b5151",
+            "version": "1.3.0"
+        }
+    ]
+}

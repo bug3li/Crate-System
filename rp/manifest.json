@@ -1,0 +1,24 @@
+{
+    "format_version": 2,
+    "header": {
+        "name": "CrateSystem",
+        "description": "...",
+        "uuid": "27f60925-4d53-44b3-8765-193acc430087",
+        "version": "1.3.6",
+        "min_engine_version": [1, 21, 130],
+        "pack_scope": "world"
+    },
+    "modules": [
+        {
+            "type": "resources",
+            "uuid": "a4176985-c4e4-440d-b547-6208f153a4e3",
+            "version": "1.3.0"
+        }
+    ],
+    "dependencies": [
+        {
+            "uuid": "6b4b7be3-9a97-4fc0-85bb-54becd8b5151",
+            "version": "1.3.0"
+        }
+    ]
+}
