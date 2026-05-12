@@ -1,5 +1,3 @@
----
-
 # 📦 Minecraft Bedrock Crate System
 
 A robust, script-based loot crate system for Minecraft Bedrock Edition (Script API). This system features animated item cycling, weighted loot tables, and integrated UI previews.
@@ -25,7 +23,7 @@ A robust, script-based loot crate system for Minecraft Bedrock Edition (Script A
 
 ## 🛠 Configuration
 
-Define your crates in the `CRATE_DATA` array. Each crate requires an interaction point (where the player clicks) and a chest location (where the loot is stored).
+Define your crates in the `CRATE_DATA` array. Each crate requires an interaction point (where the player clicks) and a chest location (where the loot is stored). Ensure all names are wrapped in quotes to avoid YAML or JSON parsing errors.
 
 ```javascript
 const CRATE_DATA = [
