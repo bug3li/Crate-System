@@ -53,8 +53,8 @@ This system uses **physical chests** to determine loot.
 
 ## 📂 Project Structure
 
-* `main.js`: Entry point that handles event subscriptions and controller initialization.
-* `CratesManager.js`: The core logic for animations, inventory management, and UI rendering.
+* `usage.js`: Entry point that handles event subscriptions and controller initialization.
+* `main.js`: The core logic for animations, inventory management, and UI rendering.
 * `util/`: Helper functions for weighted randomness, vector checks, and string formatting.
 
 ## ⚠️ Requirements
