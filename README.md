@@ -1,6 +1,7 @@
 <img width="1920" height="1009" alt="Screenshot 2026-05-13 161710" src="https://github.com/user-attachments/assets/920cbef1-b189-4c30-90fe-7deb53ad821e" />
 <img width="1920" height="1009" alt="Screenshot 2026-05-13 161621" src="https://github.com/user-attachments/assets/f18860fa-cfe6-4f07-a213-db8e4f7b4e61" />
 <img width="1920" height="1009" alt="Screenshot 2026-05-13 160908" src="https://github.com/user-attachments/assets/06b4051f-5340-48a0-ba63-541518b3f326" />
+
 # 📦 Minecraft Bedrock Crate System
 
 A robust, script-based loot crate system for Minecraft Bedrock Edition (Script API). This system features animated item cycling, weighted loot tables, and integrated UI previews.
