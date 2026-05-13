@@ -1,5 +1,4 @@
 import { system, world, Player, ItemStack, EnchantmentType } from "@minecraft/server";
-import { getWeightedRandom } from "./util/object/getWeightedRandom";
 import { ChestFormData } from "./util/extensions/forms";
 import { capitalize } from "./util/string/capitalize";
 import { toRoman } from "./util/string/toRoman";
@@ -120,7 +119,7 @@ export class CratesManager {
                         itemDisplay.remove();
                     }
 
-                    const weightedResult = getWeightedRandom(chest);
+                    const weightedResult = CratesManager.getWeightedRandom(chest);
                     itemDisplay = overworld.spawnItem(weightedResult.item, item_location);
                     itemDisplay.nameTag = "§c§r§a§t§e";
 
@@ -171,5 +170,37 @@ export class CratesManager {
         dimension.getEntities({ type: "item" }).forEach((data) => {
             if (data.nameTag === "§c§r§a§t§e") data.remove();
         });
+    }
+
+    static getWeightedRandom(chest) {
+        const container = chest.getComponent("inventory").container;
+        let items = [];
+        let totalWeight = 0;
+
+        for (let i = 0; i < container.size; i++) {
+            const item = container.getItem(i);
+            if (!item) continue;
+
+            const nameParts = item.nameTag ? item.nameTag.split('|') : [item.typeId, "1"];
+            const weight = parseInt(nameParts[1]) || 1;
+
+            totalWeight += weight;
+            items.push({
+                slot: i,
+                weight: weight,
+                ItemStack: item,
+                cleanName: nameParts[0]
+            });
+        }
+
+        let roll = Math.random() * totalWeight;
+        for (const entry of items) {
+            if (roll < entry.weight) {
+                const chance = ((entry.weight / totalWeight) * 100).toFixed(2);
+                entry.ItemStack.nameTag = `§r${entry.cleanName}`
+                return { item: entry.ItemStack, chance: chance, name: entry.cleanName };
+            }
+            roll -= entry.weight;
+        }
     }
 }
