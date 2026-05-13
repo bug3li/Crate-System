@@ -1,34 +1,70 @@
-# Minecraft Bedrock Auction House System
+# 📦 Minecraft Bedrock Crate System
 
-A high-performance, chest-form-based Auction House system for Minecraft Bedrock Edition. This system utilizes physical storage chests for item persistence and a robust database-backed metadata layer.
+A robust, script-based loot crate system for Minecraft Bedrock Edition (Script API). This system features animated item cycling, weighted loot tables, and integrated UI previews.
 
-## 🚀 Features
+## ✨ Features
 
-* **Chest GUI Interface:** Native-feeling UI using `ChestFormData`.
-* **Dynamic Scaling:** Automatically generates new physical chests as the AH fills up.
-* **Persistent Meta-Data:** Stores costs, owner IDs, and listing times in a custom Database.
-* **Search & Filters:** Real-time search by name, type, enchantments, or damage.
-* **Automatic Item Shifting:** Keeps the UI clean by shifting items forward when a listing is bought.
-* **Expiration Logic:** Items expire after 24 hours, allowing owners to reclaim them.
-* **Seller Tools:** Manage your own listings, update prices, or cancel sales in real-time.
+* **Weighted Loot System:** Uses physical chests as loot tables—simply place items in a chest and assign weights via item nametags.
+* **Animated Openings:** Visual "hologram" animation where items cycle above the crate before landing on the final reward.
+* **Loot Preview:** Players can sneak-click a crate to open a custom UI showing all possible rewards and their percentage chances.
+* **Anti-Glitch Measures:**
+* Prevents concurrent openings (one player at a time).
+* Prevents players from picking up the "cycling" items during the animation.
+* Automatic cleanup if a player leaves the server mid-opening.
 
-## 📂 Installation
 
-1.  Ensure your project includes the required utilities:
-    * `../util/cooldatabase.js` (Persistent storage)
-    * `../util/extensions/forms.js` (Chest UI library)
-    * `../util/playerlookup.js` (Player name/ID mapping)
-2.  Import and initialize the `AuctionHouse` class in your main script.
+* **Knockback Feedback:** Provides physical feedback if a player attempts to open a crate without a key.
 
-## 💾 Data & Persistence
+## 🚀 Installation
 
-### Player Lookup Cache
-The system uses a `PlayerLookup` utility to map UUIDs to player names. To ensure names are available for offline sellers, hook into the `playerLeave` event:
+1. Clone this repository into your behavior pack's `scripts` folder.
+2. Ensure your `manifest.json` has the required `@minecraft/server` and `@minecraft/server-ui` dependencies.
+3. Configure your crate locations in the configuration file.
+
+## 🛠 Configuration
+
+Define your crates in the `CRATE_DATA` array. Each crate requires an interaction point (where the player clicks) and a chest location (where the loot is stored). Ensure all names are wrapped in quotes to avoid YAML or JSON parsing errors.
 
 ```javascript
-import { world } from "@minecraft/server";
-import { PlayerLookup } from "./util/playerlookup";
+const CRATE_DATA = [
+    {
+        interaction_location: { x: 1389, y: 152, z: 967 },
+        key: {
+            type_id: "minecraft:tripwire_hook",
+        },
+        name: "§2Rare Crate",
+        chest_location: { x: 1372, y: 129, z: 1032 },
+    },
+];
 
-world.beforeEvents.playerLeave.subscribe((event) => {
-    PlayerLookup.saveToCache(event.player);
-});
+```
+
+## 💎 Creating Loot Tables
+
+This system uses **physical chests** to determine loot.
+
+1. Place a chest at the `chest_location` defined in your config.
+2. Place the reward items inside.
+3. **Set Weights:** Rename the items in the chest using the format: `Item Name|Weight`.
+* *Example:* An item named `God Sword|10` has a weight of 10.
+* The system calculates the percentage chance automatically based on the total weights of all items in the chest.
+
+
+
+## 📂 Project Structure
+
+* `usage.js`: Entry point that handles event subscriptions and controller initialization.
+* `main.js`: The core logic for animations, inventory management, and UI rendering.
+* `util/`: Helper functions for weighted randomness, vector checks, and string formatting.
+
+## ⚠️ Requirements
+
+* **Minecraft Bedrock Edition**
+* **Experimental Cameras & Scripting** enabled in world settings.
+* **@minecraft/server** version compatible with your current game build.
+
+---
+
+### 📜 License
+
+This project is open-source. Feel free to modify it for your own server or realm!
