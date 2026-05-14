@@ -40,7 +40,9 @@ export class CratesManager {
             for (const enchantment of enchantments) {
                 let level = toRoman(enchantment.level);
                 let typeId = enchantment.type.id;
-                if (enchantment.maxLevel === 1) level = "";
+
+                let maxLevel = enchantment.type.maxLevel;
+                if (maxLevel === 1) level = "";
 
                 if (typeId.includes("_")) {
                     typeId = typeId.split("_");
