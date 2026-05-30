@@ -170,7 +170,7 @@ export class CratesManager {
     static resetItems(dimensionstr) {
         const dimension = world.getDimension(dimensionstr);
         dimension.getEntities({ type: "item" }).forEach((data) => {
-            if (data.nameTag === "§c§r§a§t§e") data.remove();
+            if (data.nameTag === "§c§r§a§t§e") system.run(() => data.remove());
         });
     }
 
