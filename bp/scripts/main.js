@@ -81,8 +81,6 @@ export class CratesManager {
             const playerinv = player.getComponent("inventory").container;
             if (playerinv.emptySlotsCount === 0) return player.sendMessage(`§cNeed 1 free slot`);
 
-            player.sendMessage(`§aOpening ${crate.name}...`)
-
             let haskey = false;
             for (let i = 0; i < playerinv.size; i++) {
                 const item = playerinv.getItem(i);
@@ -102,8 +100,14 @@ export class CratesManager {
             if (!haskey) {
                 const v = player.getViewDirection();
                 player.applyKnockback({ x: -4 * v.x, z: -4 * v.z }, 0.8);
+                player.playSound("note.bass", {
+                    volume: 1.0,
+                    pitch: 1,
+                });
                 return player.sendMessage("§cDont have a key in inventory");
             }
+
+            player.sendMessage(`§aOpening ${crate.name}...`)
 
             crates_opening.set(crate.name, player.id)
             const overworld = world.getDimension("overworld");
@@ -126,7 +130,6 @@ export class CratesManager {
                     itemDisplay.nameTag = "§c§r§a§t§e";
 
                     player.playSound("note.bell", {
-                        location: player.location,
                         volume: 1.0,
                         pitch: 0.5 + i / 40,
                     });
