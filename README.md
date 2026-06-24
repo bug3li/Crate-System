@@ -57,11 +57,14 @@ This engine reads physical chests to evaluate loot distributions dynamically at 
 
 ## 📂 Project Structure
 
-* `crates.js`: Core controller class managing configuration states, event subscriptions, animation routers, and memory cleanup.
-* `util/cooldatabase.js`: Underlying persistent state storage wrapper.
-* `util/extensions/forms.js`: Custom UI layout bindings translating chest structures into player menus.
-* `util/vector/`: Core vector mathematics and bounding-box location validation.
-* `util/string/`: Data layout helpers managing text transformations and Roman Numeral conversions.
+* `main.js`: The core controller class managing configuration states, event subscriptions, animation routers, and memory cleanup.
+* `usage.js`: Entry point that initializes the `CratesManager` class instance and handles high-level system event routing.
+* `cooldatabase.js`: Underlying persistent data storage wrapper for tracking server economy or player states.
+* `util/`: Helper modules divided by domain:
+  * `extensions/`: Contains custom form extensions (like `ChestFormData`) for UI compilation.
+  * `number/`: Handles numerical evaluations, including fetching dynamic attack damage variables.
+  * `string/`: Manages text capitalization and converting values to Roman Numerals.
+  * `vector/`: Handles 3D spatial calculations and bounding-box location validation loops.
 
 ## ⚠️ Requirements
 
