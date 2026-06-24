@@ -59,7 +59,6 @@ This engine reads physical chests to evaluate loot distributions dynamically at 
 
 * `main.js`: The core engine module. Houses the `CratesManager` class framework which handles weighted loot calculations, inventory validation checks, dual-animation paths, and defensive memory cleanup.
 * `usage.js`: The central environment registry and configuration layer. Defines your crate spatial locations, mapping coordinates to target item key requirements, instantiates the main controller, and binds global event triggers to the engine.
-* `cooldatabase.js`: Underlying custom data caching manager for tracking persistence structures.
 * `util/`: Organized auxiliary helper sub-directories split by processing domains:
   * `extensions/`: Contains client-side custom viewport elements, including the `ChestFormData` layout builder used for loot previews.
   * `number/`: Handles runtime game mechanics evaluations, such as checking item-specific attack damage attributes.
