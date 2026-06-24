@@ -57,14 +57,14 @@ This engine reads physical chests to evaluate loot distributions dynamically at 
 
 ## 📂 Project Structure
 
-* `main.js`: The core controller class managing configuration states, event subscriptions, animation routers, and memory cleanup.
-* `usage.js`: Entry point that initializes the `CratesManager` class instance and handles high-level system event routing.
-* `cooldatabase.js`: Underlying persistent data storage wrapper for tracking server economy or player states.
-* `util/`: Helper modules divided by domain:
-  * `extensions/`: Contains custom form extensions (like `ChestFormData`) for UI compilation.
-  * `number/`: Handles numerical evaluations, including fetching dynamic attack damage variables.
-  * `string/`: Manages text capitalization and converting values to Roman Numerals.
-  * `vector/`: Handles 3D spatial calculations and bounding-box location validation loops.
+* `main.js`: The core engine module. Houses the `CratesManager` class framework which handles weighted loot calculations, inventory validation checks, dual-animation paths, and defensive memory cleanup.
+* `usage.js`: The central environment registry and configuration layer. Defines your crate spatial locations, mapping coordinates to target item key requirements, instantiates the main controller, and binds global event triggers to the engine.
+* `cooldatabase.js`: Underlying custom data caching manager for tracking persistence structures.
+* `util/`: Organized auxiliary helper sub-directories split by processing domains:
+  * `extensions/`: Contains client-side custom viewport elements, including the `ChestFormData` layout builder used for loot previews.
+  * `number/`: Handles runtime game mechanics evaluations, such as checking item-specific attack damage attributes.
+  * `string/`: Standard text sanitization routines covering naming capitalization and Roman Numeral conversions.
+  * `vector/`: Dedicated spatial algorithms used to validate interaction points and player coordinate checks.
 
 ## ⚠️ Requirements
 
