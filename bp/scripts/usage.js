@@ -1,5 +1,5 @@
 import { world } from "@minecraft/server";
-import { CratesManager } from "./main";
+import { CratesManager } from "./main.js"; // Added .js extension for explicit ES module loading
 
 /**
  * Registry of all available crates on the server.
@@ -10,8 +10,8 @@ const CRATE_DATA = [
         // Coordinates where the player clicks to open the crate
         interaction_location: { x: 1389, y: 152, z: 967 },
         key: {
-            // The item required to be in the player's inventory
-            type_id: "minecraft:tripwire_hook",
+            // FIXED: Changed type_id to typeId to match the main.js inventory scanner
+            typeId: "minecraft:tripwire_hook",
         },
         // Name displayed in the UI and messages
         name: "§2Rare Crate",
@@ -20,8 +20,8 @@ const CRATE_DATA = [
     },
 ];
 
-// Initialize the controller with the crate configuration
-const crates_controller = new CratesManager(CRATE_DATA);
+// Initialize the controller (Crates data, Animation Mode: 1 = Physical Items, 2 = Primitives)
+const crates_controller = new CratesManager(CRATE_DATA, 2);
 
 /**
  * Event Subscriptions

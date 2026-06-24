@@ -3,7 +3,6 @@ import { ChestFormData } from "./util/extensions/forms";
 import { capitalize } from "./util/string/capitalize";
 import { toRoman } from "./util/string/toRoman";
 import { locationCheck } from "./util/vector/locationCheck.js";
-import { Database } from "./util/cooldatabase.js";
 import { getAttackDamage } from "./util/number/getAttackDamage.js";
 
 const crates_opening = new Map();
