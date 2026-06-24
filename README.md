@@ -2,73 +2,78 @@
 <img width="1920" height="1009" alt="Screenshot 2026-05-13 161621" src="https://github.com/user-attachments/assets/f18860fa-cfe6-4f07-a213-db8e4f7b4e61" />
 <img width="1920" height="1009" alt="Screenshot 2026-05-13 160908" src="https://github.com/user-attachments/assets/06b4051f-5340-48a0-ba63-541518b3f326" />
 
-# 📦 Minecraft Bedrock Crate System
+# 📦 Minecraft Bedrock Crate Engine
 
-A robust, script-based loot crate system for Minecraft Bedrock Edition (Script API). This system features animated item cycling, weighted loot tables, and integrated UI previews.
+A high-performance, script-based loot crate framework for Minecraft Bedrock Edition using the native Scripting API. This engine transitions traditional unoptimized entity-based reward cycles into highly performant, client-isolated visuals.
 
 ## ✨ Features
 
-* **Weighted Loot System:** Uses physical chests as loot tables—simply place items in a chest and assign weights via item nametags.
-* **Animated Openings:** Visual "hologram" animation where items cycle above the crate before landing on the final reward.
-* **Loot Preview:** Players can sneak-click a crate to open a custom UI showing all possible rewards and their percentage chances.
-* **Anti-Glitch Measures:**
-* Prevents concurrent openings (one player at a time).
-* Prevents players from picking up the "cycling" items during the animation.
-* Automatic cleanup if a player leaves the server mid-opening.
-
-
-* **Knockback Feedback:** Provides physical feedback if a player attempts to open a crate without a key.
+* **Dual Animation Matrix:** Switch effortlessly between standard entity item drops and advanced client-side `TextPrimitive` shape rendering.
+* **Per-Player Isolation:** Client-side animations run exclusively on the opening player's thread via `visibleTo`. Multiple players can roll different crates simultaneously without global lockouts or server-wide packet chokes.
+* **Dynamic Weighted Loot Tables:** Uses physical container blocks as live loot tables—simply place items in a chest and assign weights directly via item nametags.
+* **Reactive Loot Previews:** Players can sneak-click a crate to open a custom UI (via `ChestFormData`) showing real-time calculations of all rewards and their exact percentage chances.
+* **Defensive Fail-Safe Architecture:** * Auto-cleans up rogue entities or floating primitive text shapes if a player hard-disconnects or crashes mid-roll.
+  * Structural proxy protection handles inventory checking and empty slot validation before a key is consumed.
+* **Knockback Feedback:** Provides physical vector knockback impulses and directional audio cues if an unauthorized player attempts to open a crate without the required key.
 
 ## 🚀 Installation
 
-1. Clone this repository into your behavior pack's `scripts` folder.
-2. Ensure your `manifest.json` has the required `@minecraft/server` and `@minecraft/server-ui` dependencies.
-3. Configure your crate locations in the configuration file.
+1. Copy the contents of this framework into your behavior pack's `scripts` directory.
+2. Ensure your `manifest.json` includes the required `@minecraft/server` and target UI dependencies.
+3. Register your crate spatial parameters in your entry script file.
 
 ## 🛠 Configuration
 
-Define your crates in the `CRATE_DATA` array. Each crate requires an interaction point (where the player clicks) and a chest location (where the loot is stored). Ensure all names are wrapped in quotes to avoid YAML or JSON parsing errors.
+Define your crates array utilizing vector coordinates. Ensure your keys match the API's standard item schema definitions.
 
 ```javascript
-const CRATE_DATA = [
+const crates = [
     {
         interaction_location: { x: 1389, y: 152, z: 967 },
         key: {
-            type_id: "minecraft:tripwire_hook",
+            typeId: "ghost:rare_key",
         },
         name: "§2Rare Crate",
         chest_location: { x: 1372, y: 129, z: 1032 },
-    },
+    }
 ];
+
+// Initialize the controller (Animation modes: 1 = Entity Items, 2 = Client Primitives)
+const cratesController = new CratesManager(crates, 2);
 
 ```
 
 ## 💎 Creating Loot Tables
 
-This system uses **physical chests** to determine loot.
+This engine reads physical chests to evaluate loot distributions dynamically at runtime.
 
-1. Place a chest at the `chest_location` defined in your config.
-2. Place the reward items inside.
-3. **Set Weights:** Rename the items in the chest using the format: `Item Name|Weight`.
-* *Example:* An item named `God Sword|10` has a weight of 10.
-* The system calculates the percentage chance automatically based on the total weights of all items in the chest.
+1. Place a chest at the designated `chest_location` coordinate.
+2. Place your target reward items inside the slots.
+3. **Set Probability Weights:** Format your item nametags using a pipe delimiter: `Display Name|Weight`.
+* *Example:* An item named `§dLegendary Sword|15` gives it an integer weight value of 15.
+* The parser automatically strips formatting, evaluates the cumulative total weight sum, and displays precise math to the client inside the preview UI.
 
 
 
 ## 📂 Project Structure
 
-* `usage.js`: Entry point that handles event subscriptions and controller initialization.
-* `main.js`: The core logic for animations, inventory management, and UI rendering.
-* `util/`: Helper functions for weighted randomness, vector checks, and string formatting.
+* `main.js`: The core engine module. Houses the `CratesManager` class framework which handles weighted loot calculations, inventory validation checks, dual-animation paths, and defensive memory cleanup.
+* `usage.js`: The central environment registry and configuration layer. Defines your crate spatial locations, mapping coordinates to target item key requirements, instantiates the main controller, and binds global event triggers to the engine.
+* `cooldatabase.js`: Underlying custom data caching manager for tracking persistence structures.
+* `util/`: Organized auxiliary helper sub-directories split by processing domains:
+  * `extensions/`: Contains client-side custom viewport elements, including the `ChestFormData` layout builder used for loot previews.
+  * `number/`: Handles runtime game mechanics evaluations, such as checking item-specific attack damage attributes.
+  * `string/`: Standard text sanitization routines covering naming capitalization and Roman Numeral conversions.
+  * `vector/`: Dedicated spatial algorithms used to validate interaction points and player coordinate checks.
 
 ## ⚠️ Requirements
 
 * **Minecraft Bedrock Edition**
-* **Experimental Cameras & Scripting** enabled in world settings.
-* **@minecraft/server** version compatible with your current game build.
+* **Beta APIs** enabled in world settings.
+* Compatible with modern `@minecraft/server` runtime implementations.
 
 ---
 
 ### 📜 License
 
-This project is open-source. Feel free to modify it for your own server or realm!
+This project is open-source. Feel free to fork, optimize, and scale it for your own competitive server or network infrastructure!
