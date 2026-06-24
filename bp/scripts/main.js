@@ -9,8 +9,9 @@ import { getAttackDamage } from "./util/number/getAttackDamage.js";
 const crates_opening = new Map();
 
 export class CratesManager {
-    constructor(crates) {
+    constructor(crates, animation = 2) {
         this.crates = crates
+        this.animation = animation
     }
 
     view_loot(player, chest, crate) {
@@ -73,7 +74,7 @@ export class CratesManager {
             const player = data.player;
             const playerinventory = player.getComponent("inventory").container;
 
-            if (crates_opening.get(crate.name) !== false && crates_opening.has(crate.name)) return player.sendMessage("§cPlease wait till crate is not in use!");
+            if (crates_opening.has(crate.name) && this.animation == 1 || crates_opening.get(crate.name)?.playerId === player.id && this.animation == 2) return player.sendMessage("§cPlease wait till crate is not in use!");
 
             const chest = world.getDimension("overworld").getBlock(crate.chest_location);
             if (player.isSneaking) return this.view_loot(player, chest, crate);
@@ -109,55 +110,95 @@ export class CratesManager {
 
             player.sendMessage(`§aOpening ${crate.name}...`)
 
-            crates_opening.set(crate.name, player.id)
+            crates_opening.set(crate.name, { playerId: player.id })
             const overworld = world.getDimension("overworld");
             const interaction_location = crate.interaction_location;
-            const item_location = {
+            let item_location = {
                 x: interaction_location.x + 0.5,
-                y: interaction_location.y + 1.2,
+                y: 0,
                 z: interaction_location.z + 0.5,
             };
-            let itemDisplay;
+            item_location.y = this.animation == 1 ? interaction_location.y + 1.2 : interaction_location.y + 2
 
-            try {
-                for (let i = 0; i < 40; i++) {
+            let item = {};
+
+            if (this.animation == 1) {
+                let itemDisplay;
+
+                try {
+                    for (let i = 0; i < 40; i++) {
+                        if (itemDisplay && itemDisplay.isValid) {
+                            itemDisplay.remove();
+                        }
+
+                        const weightedResult = CratesManager.getWeightedRandom(chest);
+                        itemDisplay = overworld.spawnItem(weightedResult.item, item_location);
+                        itemDisplay.nameTag = "§c§r§a§t§e";
+
+                        player.playSound("note.bell", {
+                            volume: 1.0,
+                            pitch: 0.5 + i / 40,
+                        });
+
+                        const delay = i > 35 ? 10 : 2;
+                        await system.waitTicks(delay);
+                    }
+
+                    item = itemDisplay.getComponent("item").itemStack;
+
                     if (itemDisplay && itemDisplay.isValid) {
                         itemDisplay.remove();
                     }
-
-                    const weightedResult = CratesManager.getWeightedRandom(chest);
-                    itemDisplay = overworld.spawnItem(weightedResult.item, item_location);
-                    itemDisplay.nameTag = "§c§r§a§t§e";
-
-                    player.playSound("note.bell", {
-                        volume: 1.0,
-                        pitch: 0.5 + i / 40,
-                    });
-
-                    const delay = i > 35 ? 10 : 2;
-                    await system.waitTicks(delay);
+                } catch (e) { } finally {
+                    CratesManager.resetItems("overworld");
                 }
+            } else {
+                const ItemDisplay = new TextPrimitive(item_location, "Placeholder");
+                const colour = crate.name.includes("§") ? crate.name.slice(0, 2) : "";
+                ItemDisplay.color = { red: 1, green: 1, blue: 1, alpha: 1 }
+                ItemDisplay.scale = 2;
+                ItemDisplay.backfaceVisible = true;
+                ItemDisplay.textBackfaceVisible = true;
+                ItemDisplay.visibleTo = [player];
 
-                const item = itemDisplay.getComponent("item").itemStack;
+                world.primitiveShapesManager.addText(ItemDisplay, player.dimension);
 
-                if (itemDisplay && itemDisplay.isValid) {
-                    itemDisplay.remove();
+                crates_opening.set(crate.name, { playerId: player.id, TextDisplay: ItemDisplay })
+
+                try {
+                    for (let i = 0; i < 40; i++) {
+                        const weightedResult = CratesManager.getWeightedRandom(chest);
+                        item = weightedResult.item;
+                        ItemDisplay.setText(`${colour}${weightedResult.name} §8x${colour}${weightedResult.item.amount}`)
+
+                        player.playSound("note.bell", {
+                            volume: 1.0,
+                            pitch: 0.5 + i / 40,
+                        });
+
+                        const delay = i > 35 ? 10 : 2;
+                        await system.waitTicks(delay);
+                    }
+                } catch (e) { } finally {
+                    ItemDisplay.remove()
                 }
+            }
 
+            crates_opening.set(crate.name, false)
+
+            try {
                 player.playSound("random.orb", { location: player.location, volume: 100, pitch: 1 });
                 player.sendMessage(`§aOpened ${crate.name}\n §aWon ${item.amount}§8x §a${item.nameTag}`);
-                player.getComponent("inventory").container.addItem(item);
-            } catch (e) { } finally {
-                CratesManager.resetItems("overworld");
-                return crates_opening.set(crate.name, false)
-            }
+                player.getComponent("inventory").container.addItem(item)
+            } catch (e) { }
         });
     }
 
     PlayerLeaveBeforeEvent(data) {
         const playerId = data.player.id;
-        for (const [crateName, openerId] of crates_opening) {
-            if (openerId === playerId) {
+        for (const [crateName, obj] of crates_opening) {
+            if (obj.playerId === playerId) {
+                CratesManager.resetTexts();
                 CratesManager.resetItems("overworld");
                 crates_opening.set(crateName, false);
                 return;
@@ -168,6 +209,12 @@ export class CratesManager {
     EntityItemPickupBeforeEvent(data) {
         if (data.item.nameTag !== "§c§r§a§t§e") return;
         data.cancel = true;
+    }
+
+    static resetTexts() {
+        crates_opening.forEach((key, value) => {
+            if (value?.TextDisplay) world.primitiveShapesManager.removeText(value?.TextDisplay);
+        })
     }
 
     static resetItems(dimensionstr) {
@@ -187,6 +234,8 @@ export class CratesManager {
             if (!item) continue;
 
             const nameParts = item.nameTag ? item.nameTag.split('|') : [item.typeId, "1"];
+            const cleanName = nameParts[0].includes("§") ? nameParts[0].slice(2) : nameParts[0];
+            "".slice(2)
             const weight = parseInt(nameParts[1]) || 1;
 
             totalWeight += weight;
@@ -194,7 +243,7 @@ export class CratesManager {
                 slot: i,
                 weight: weight,
                 ItemStack: item,
-                cleanName: nameParts[0]
+                cleanName: cleanName
             });
         }
 
