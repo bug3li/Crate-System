@@ -4,6 +4,7 @@ import { capitalize } from "./util/string/capitalize";
 import { toRoman } from "./util/string/toRoman";
 import { locationCheck } from "./util/vector/locationCheck.js";
 import { getAttackDamage } from "./util/number/getAttackDamage.js";
+import { getItemArmor, getItemKnockbackResistance, getItemToughness } from "./util/number/getArmorStats.js";
 
 const crates_opening = new Map();
 
@@ -54,10 +55,20 @@ export class CratesManager {
                 enchanted = true;
             }
 
-            description.push(`§9${((chance / totalchance) * 100).toFixed(1)}% Chance`);
+            if (enchanted) description.push("");
 
             const damage = getAttackDamage(item);
-            if (damage !== 0) description.push(`\n§9+${Math.floor(damage)} Attack Damage`);
+            if (damage !== 0) description.push(`§9+${Math.floor(damage)} Attack Damage`);
+
+            description.push(
+                ...[{ val: getItemArmor(item), txt: "Armor" },
+                { val: getItemToughness(item), txt: "Armor Toughness" },
+                { val: getItemKnockbackResistance(item), txt: "Knockback Resistance" }]
+                .filter(stat => stat.val !== 0)
+                .map(stat => `§9+${Math.floor(stat.val)} ${stat.txt}`)
+            );
+
+            description.push(`§9${((chance / totalchance) * 100).toFixed(1)}% Chance`);
 
             form.button(i, nameTag[0], description, item.typeId, item.amount, 0, enchanted);
         }
