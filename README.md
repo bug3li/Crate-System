@@ -1,6 +1,7 @@
 <img width="1920" height="1009" alt="Screenshot 2026-05-13 161710" src="https://github.com/user-attachments/assets/920cbef1-b189-4c30-90fe-7deb53ad821e" />
-<img width="1920" height="1009" alt="Screenshot 2026-05-13 161621" src="https://github.com/user-attachments/assets/f18860fa-cfe6-4f07-a213-db8e4f7b4e61" />
 <img width="1920" height="1009" alt="Screenshot 2026-05-13 160908" src="https://github.com/user-attachments/assets/06b4051f-5340-48a0-ba63-541518b3f326" />
+<img width="1920" height="1009" alt="Screenshot 2026-05-13 161621" src="https://github.com/user-attachments/assets/f18860fa-cfe6-4f07-a213-db8e4f7b4e61" />
+<img width="1920" height="1080" alt="Screenshot 2026-06-25 161506" src="https://github.com/user-attachments/assets/ab8c1803-6caa-418f-bb4f-eaf82d5e3026" />
 
 # 📦 Minecraft Bedrock Crate Engine
 
@@ -59,7 +60,6 @@ This engine reads physical chests to evaluate loot distributions dynamically at 
 
 * `main.js`: The core engine module. Houses the `CratesManager` class framework which handles weighted loot calculations, inventory validation checks, dual-animation paths, and defensive memory cleanup.
 * `usage.js`: The central environment registry and configuration layer. Defines your crate spatial locations, mapping coordinates to target item key requirements, instantiates the main controller, and binds global event triggers to the engine.
-* `cooldatabase.js`: Underlying custom data caching manager for tracking persistence structures.
 * `util/`: Organized auxiliary helper sub-directories split by processing domains:
   * `extensions/`: Contains client-side custom viewport elements, including the `ChestFormData` layout builder used for loot previews.
   * `number/`: Handles runtime game mechanics evaluations, such as checking item-specific attack damage attributes.
