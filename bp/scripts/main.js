@@ -194,7 +194,7 @@ export class CratesManager {
                 }
             }
 
-            crates_opening.set(crate.name, false)
+            crates_opening.delete(crate.name)
 
             try {
                 player.playSound("random.orb", { location: player.location, volume: 100, pitch: 1 });
