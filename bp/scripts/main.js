@@ -5,6 +5,7 @@ import { toRoman } from "./util/string/toRoman";
 import { locationCheck } from "./util/vector/locationCheck.js";
 import { getAttackDamage } from "./util/number/getAttackDamage.js";
 import { getItemArmor, getItemKnockbackResistance, getItemToughness } from "./util/number/getArmorStats.js";
+import { typeIdtoName } from "./util/string/typeIdToName.js";
 
 const crates_opening = new Map();
 
