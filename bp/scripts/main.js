@@ -20,20 +20,17 @@ export class CratesManager {
         const form = new ChestFormData("small");
         form.title(crate.name);
         let totalchance = 0;
+        const items = [];
         for (let i = 0; i < inventory.size; i++) {
             const item = inventory.getItem(i);
             if (!item) continue;
-            const nameTag = item.nameTag.split("|");
-            const chance = parseInt(nameTag[1]) || 0;
+            const split = item.nameTag?.split("|");
+            const nameTag = item.nameTag ? split[0] : typeIdtoName(item.typeId);
+            const chance = item.nameTag ? parseInt(split[1]) : 0;
+            items.push([item, chance, nameTag, i]);
             totalchance += parseInt(chance);
         }
-        for (let i = 0; i < inventory.size; i++) {
-            const item = inventory.getItem(i);
-            if (!item) continue;
-
-            const nameTag = item.nameTag.split("|");
-            const chance = parseInt(nameTag[1]) || 0;
-
+        for (const [item, chance, nameTag, slot] of items) {
             let description = [];
             let enchanted = false;
 
@@ -46,10 +43,9 @@ export class CratesManager {
                 if (maxLevel === 1) level = "";
 
                 if (typeId.includes("_")) {
-                    typeId = typeId.split("_");
-                    let a = capitalize(typeId[0]);
-                    let b = capitalize(typeId[1]);
-                    typeId = a + " " + b;
+                    typeId = typeId.split("_").map(word => capitalize(word)).join(" ");
+                } else {
+                    typeId = capitalize(typeId);
                 }
                 description.push(`§7${capitalize(typeId)} ${level}`);
                 enchanted = true;
@@ -64,13 +60,13 @@ export class CratesManager {
                 ...[{ val: getItemArmor(item), txt: "Armor" },
                 { val: getItemToughness(item), txt: "Armor Toughness" },
                 { val: getItemKnockbackResistance(item), txt: "Knockback Resistance" }]
-                .filter(stat => stat.val !== 0)
-                .map(stat => `§9+${Math.floor(stat.val)} ${stat.txt}`)
+                    .filter(stat => stat.val !== 0)
+                    .map(stat => `§9+${Math.floor(stat.val)} ${stat.txt}`)
             );
 
             description.push(`§9${((chance / totalchance) * 100).toFixed(1)}% Chance`);
 
-            form.button(i, nameTag[0], description, item.typeId, item.amount, 0, enchanted);
+            form.button(slot, nameTag, description, item.typeId, item.amount, 0, enchanted);
         }
         form.show(player);
     }
